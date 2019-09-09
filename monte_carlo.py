@@ -27,28 +27,27 @@ class MonteCarlo:
             self.n[state] = 1
 
     def expansion(self):
-        while(1):
-            self.result = {}
-            self.stack = [0 for i in range(65)]
-            self.current = score4.binarize()
-            actions = score4.possibleActions()
-            if actions.shape[0] == 0 or score4.judge()[0]:
-                self.r = score4.valueBMW()
-                self.backPropagate(self.current, self.r)
-                break
-            score4.saveState()
-            for x,y in actions:
-                print("action")
-                score4.loadState()
-                score4.place(x,y,self.colors[0%2])
-                self.result[score4.binarize()] = [x,y]
-                self.simulation(x,y)
-                for state in self.stack[depth:self.count+1][::-1]:
-                    self.backPropagate(state, self.r)
-            break
+        self.result = {}
+        self.stack = [0 for i in range(65)]
+        self.current = score4.binarize()
+        actions = score4.possibleActions()
+        if actions.shape[0] == 0 or score4.judge()[0]:
+            self.r = score4.valueBMW()
+            self.backPropagate(self.current, self.r)
+            return False
+        score4.saveState()
+        for x,y in actions:
+            print("action")
+            score4.loadState()
+            score4.place(x,y,self.colors[0%2])
+            self.result[score4.binarize()] = [x,y]
+            self.simulation(x,y)
+            for state in self.stack[:self.count+1][::-1]:
+                self.backPropagate(state, self.r)
+        return True
 
     def simulation(self, x,y):
-        for i in range(100):
+        for i in range(10):
             self.count = 0
             score4.loadState()
             score4.place(x,y,self.colors[self.count%2])
@@ -74,7 +73,7 @@ class MonteCarlo:
         if depth%2 == 0:
             self.expansion()
             keys = self.result.keys()
-            values = [self.UCB1(self.v[k], self.n[k], self.n[self.current]) for k in self.result.keys()]
+            values = [self.UCB1(self.v[k], self.n[k], self.n[self.current]) for k in keys]
             nextNode = keys[max(enumerate(values), key=itemgetter(1))]
             x,y = result[nextNode]
             if not score4.place(x,y,"black"):
