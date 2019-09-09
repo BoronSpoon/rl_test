@@ -54,10 +54,13 @@ class Score4:
     def judge(self):
         black = np.any(self.currentBoardBlack.sum(0)==4) or np.any(self.currentBoardBlack.sum(1)==4) or np.any(self.currentBoardBlack.sum(2)==4)
         white = np.any(self.currentBoardWhite.sum(0)==4) or np.any(self.currentBoardWhite.sum(1)==4) or np.any(self.currentBoardWhite.sum(2)==4)
+        full = np.all(self.currentBoardWhite != 0)
         if black:
-            return True, "black"
+            return True, "Black Wins"
         elif white:
-            return True, "white"
+            return True, "White Wins"
+        elif full:
+            return True, "Full"
         else:
             return False, "not finished"
 

@@ -87,11 +87,22 @@ class MonteCarlo:
             else:
                 return True
         else:
-            if not score4.randomChoice("white"):
+            #if not score4.randomChoice("white"):
+            #    return False
+            #else:
+            #    return True
+            self.expansion()
+            keys = list(self.result.keys())
+            if len(keys) == 0:
+                return False
+            values = [self.UCB1(self.v[k], self.n[k], self.n[self.current]) for k in keys]  
+            nextNode = keys[max(enumerate(values), key=itemgetter(1))[0]]
+            x,y = self.result[nextNode]
+            score4.loadState()
+            if not score4.place(x,y,"white"):
                 return False
             else:
                 return True
-
 
         
 monteCarlo = MonteCarlo()
@@ -101,7 +112,7 @@ while(1):
     plotter.plot(score4.currentBoardBlack, score4.currentBoardWhite)
     if not monteCarlo.selection(depth):
         #plotter.plot(score4.currentBoardBlack, score4.currentBoardWhite)
-        print("end of game")
+        print(f"End of game. {score4.judge()[1]}")
         break
     depth += 1
 
