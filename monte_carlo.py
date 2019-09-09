@@ -1,5 +1,6 @@
-from score4 import *
+from score4 import Score4
 from opencv_test import *
+score4 = Score4()
 
 v = {}
 n = {}
@@ -20,29 +21,29 @@ def updateVN(state,r):
 while(1):
     count = 0
     stack = [0 for i in range(65)]
-    current = binarize()
-    actions = possibleActions()
+    current = score4.binarize()
+    actions = score4.possibleActions()
     if actions.shape[0] == 0 or judge()[0]:
-        r = valueBMW()
-        updateVN(current, r)
+        r = score4.valueBMW()
+        score4.updateVN(current, r)
         break
-    saveState()
+    score4.saveState()
     for x,y in actions:
-        loadState()
-        place(x,y,colors[count%2])
+        score4.loadState()
+        score4.place(x,y,colors[count%2])
         count += 1
         stack[0] = current
-        stack[1] = binarize()
+        stack[1] = score4.binarize()
         while(1):
-            actions = possibleActions()
-            if actions.shape[0] == 0 or judge()[0]:
-                r = valueBMW()
+            actions = score4.possibleActions()
+            if actions.shape[0] == 0 or score4.judge()[0]:
+                r = score4.valueBMW()
                 break
             else:
                 count += 1
-                stack[count] = binarize()
+                stack[count] = score4.binarize()
                 x,y = actions[np.random.choice(actions.shape[0])]
-                place(x,y,colors[count%2])
+                score4.place(x,y,colors[count%2])
                 plot(currentBoardBlack, currentBoardWhite)
         for state in stack[:count+1][::-1]:
             updateVN(state, r)
