@@ -41,7 +41,6 @@ class MonteCarlo:
             return False
         score4.saveState()
         for x,y in actions:
-            print("action")
             score4.loadState()
             score4.place(x,y,self.colors[0%2])
             self.result[score4.binarize()] = [x,y]
@@ -99,7 +98,9 @@ monteCarlo = MonteCarlo()
 
 depth = 0
 while(1):
+    plotter.plot(score4.currentBoardBlack, score4.currentBoardWhite)
     if not monteCarlo.selection(depth):
+        #plotter.plot(score4.currentBoardBlack, score4.currentBoardWhite)
         print("end of game")
         break
     depth += 1
