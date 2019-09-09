@@ -1,13 +1,23 @@
 import numpy as np
 from gmpy2 import mpz
+from copy import deepcopy
 
 currentBoardBlack = np.zeros((4,4,4), dtype="uint8")
 currentBoardWhite = np.zeros((4,4,4), dtype="uint8")
 currentBoard = np.zeros((4,4,4), dtype="uint8")
+savedBoard = [None, None]
 
 def computeCurrent():
     global currentBoard
     currentBoard = currentBoardBlack + 2*currentBoardWhite
+
+def saveState():
+    global savedBoard
+    savedBoard = [deepcopy(currentBoardBlack), deepcopy(currentBoardWhite)]
+
+def loadState():
+    global currentBoardBlack, currentBoardWhite
+    currentBoardBlack, currentBoardWhite = deepcopy(savedBoard)
 
 def possibleActions():
     return np.argwhere(np.count_nonzero(currentBoard, axis=2) != 4)
