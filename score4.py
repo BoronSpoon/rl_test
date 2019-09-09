@@ -24,6 +24,17 @@ class Score4:
 
     def valueBMW(self):
         return self.currentBoardBlack.sum() - self.currentBoardWhite.sum()
+    
+    def valueWinLose(self):
+        black = np.any(self.currentBoardBlack.sum(0)==4) or np.any(self.currentBoardBlack.sum(1)==4) or np.any(self.currentBoardBlack.sum(2)==4)
+        white = np.any(self.currentBoardWhite.sum(0)==4) or np.any(self.currentBoardWhite.sum(1)==4) or np.any(self.currentBoardWhite.sum(2)==4)
+        full = np.all(self.currentBoardWhite != 0)
+        if black:
+            return 1
+        elif white:
+            return -1
+        elif full:
+            return 0
 
     def binarize(self):
         return int(''.join([mpz(num).digits() for num in self.currentBoard.flatten()]), 3)

@@ -59,7 +59,7 @@ class MonteCarlo:
             while(1):
                 actions = score4.possibleActions()
                 if actions.shape[0] == 0 or score4.judge()[0]:
-                    self.r = score4.valueBMW()
+                    self.r = score4.valueWinLose()
                     break
                 else:
                     self.count += 1
