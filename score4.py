@@ -8,6 +8,32 @@ class Score4:
         self.currentBoardWhite = np.zeros((4,4,4), dtype="uint8")
         self.currentBoard = np.zeros((4,4,4), dtype="uint8")
         self.savedBoard = [None, None]
+        self.mask1 = np.array([[1,0,0,0],[0,1,0,0],[0,0,1,0],[0,0,0,1]])
+        self.mask2 = np.array([[0,0,0,1],[0,0,1,0],[0,1,0,0],[1,0,0,0]])
+        self.mask3 = np.array([
+            [[1,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]],
+            [[0,0,0,0],[0,1,0,0],[0,0,0,0],[0,0,0,0]],
+            [[0,0,0,0],[0,0,0,0],[0,0,1,0],[0,0,0,0]],
+            [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,1]]
+        ])
+        self.mask4 = np.array([
+            [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,1]],
+            [[0,0,0,0],[0,0,0,0],[0,0,1,0],[0,0,0,0]],
+            [[0,0,0,0],[0,1,0,0],[0,0,0,0],[0,0,0,0]],
+            [[1,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+        ])
+        self.mask5 = np.array([
+            [[0,0,0,0],[0,0,0,0],[0,0,0,0],[1,0,0,0]],
+            [[0,0,0,0],[0,0,0,0],[0,1,0,0],[0,0,0,0]],
+            [[0,0,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,0]],
+            [[0,0,0,1],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+        ])
+        self.mask6 = np.array([
+            [[0,0,0,1],[0,0,0,0],[0,0,0,0],[0,0,0,0]],
+            [[0,0,0,0],[0,0,1,0],[0,0,0,0],[0,0,0,0]],
+            [[0,0,0,0],[0,0,0,0],[0,1,0,0],[0,0,0,0]],
+            [[0,0,0,0],[0,0,0,0],[0,0,0,0],[1,0,0,0]]
+        ])
 
     def computeCurrent(self):
         self.currentBoard = self.currentBoardBlack + 2*self.currentBoardWhite
@@ -26,15 +52,15 @@ class Score4:
         return self.currentBoardBlack.sum() - self.currentBoardWhite.sum()
     
     def valueWinLose(self):
-        black = np.any(self.currentBoardBlack.sum(0)==4) or np.any(self.currentBoardBlack.sum(1)==4) or np.any(self.currentBoardBlack.sum(2)==4)
-        white = np.any(self.currentBoardWhite.sum(0)==4) or np.any(self.currentBoardWhite.sum(1)==4) or np.any(self.currentBoardWhite.sum(2)==4)
-        full = np.all(self.currentBoardWhite != 0)
-        if black:
+        ret = self.judge()[1]
+        if ret == "Black Wins":
             return 1
-        elif white:
+        elif ret == "White Wins":
             return -1
-        elif full:
+        elif ret == "Full":
             return 0
+        else:
+            print("error")
 
     def binarize(self):
         return int(''.join([mpz(num).digits() for num in self.currentBoard.flatten()]), 3)
@@ -63,9 +89,37 @@ class Score4:
         
 
     def judge(self):
-        black = np.any(self.currentBoardBlack.sum(0)==4) or np.any(self.currentBoardBlack.sum(1)==4) or np.any(self.currentBoardBlack.sum(2)==4)
-        white = np.any(self.currentBoardWhite.sum(0)==4) or np.any(self.currentBoardWhite.sum(1)==4) or np.any(self.currentBoardWhite.sum(2)==4)
-        full = np.all(self.currentBoardWhite != 0)
+        black = \
+        np.any(self.currentBoardBlack.sum(0)==4) or \
+        np.any(self.currentBoardBlack.sum(1)==4) or \
+        np.any(self.currentBoardBlack.sum(2)==4) or \
+        np.any(np.apply_over_axes(np.sum,self.currentBoardBlack*self.mask1,[0,1])[0,0,:]==4) or \
+        np.any(np.apply_over_axes(np.sum,self.currentBoardBlack*self.mask1,[1,2])[:,0,0]==4) or \
+        np.any(np.apply_over_axes(np.sum,self.currentBoardBlack*self.mask1,[2,0])[0,:,0]==4) or \
+        np.any(np.apply_over_axes(np.sum,self.currentBoardBlack*self.mask2,[0,1])[0,0,:]==4) or \
+        np.any(np.apply_over_axes(np.sum,self.currentBoardBlack*self.mask2,[1,2])[:,0,0]==4) or \
+        np.any(np.apply_over_axes(np.sum,self.currentBoardBlack*self.mask2,[2,0])[0,:,0]==4) or \
+        np.sum(self.currentBoardBlack*self.mask3)==4 or \
+        np.sum(self.currentBoardBlack*self.mask4)==4 or \
+        np.sum(self.currentBoardBlack*self.mask5)==4 or \
+        np.sum(self.currentBoardBlack*self.mask6)==4
+
+        white = \
+        np.any(self.currentBoardWhite.sum(0)==4) or \
+        np.any(self.currentBoardWhite.sum(1)==4) or \
+        np.any(self.currentBoardWhite.sum(2)==4) or \
+        np.any(np.apply_over_axes(np.sum,self.currentBoardWhite*self.mask1,[0,1])[0,0,:]==4) or \
+        np.any(np.apply_over_axes(np.sum,self.currentBoardWhite*self.mask1,[1,2])[:,0,0]==4) or \
+        np.any(np.apply_over_axes(np.sum,self.currentBoardWhite*self.mask1,[2,0])[0,:,0]==4) or \
+        np.any(np.apply_over_axes(np.sum,self.currentBoardWhite*self.mask2,[0,1])[0,0,:]==4) or \
+        np.any(np.apply_over_axes(np.sum,self.currentBoardWhite*self.mask2,[1,2])[:,0,0]==4) or \
+        np.any(np.apply_over_axes(np.sum,self.currentBoardWhite*self.mask2,[2,0])[0,:,0]==4) or \
+        np.sum(self.currentBoardWhite*self.mask3)==4 or \
+        np.sum(self.currentBoardWhite*self.mask4)==4 or \
+        np.sum(self.currentBoardWhite*self.mask5)==4 or \
+        np.sum(self.currentBoardWhite*self.mask6)==4
+
+        full = np.all(self.currentBoard != 0)
         if black:
             return True, "Black Wins"
         elif white:
