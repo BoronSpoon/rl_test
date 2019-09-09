@@ -76,10 +76,12 @@ class MonteCarlo:
     def selection(self,depth):
         if depth%2 == 0:
             self.expansion()
-            keys = self.result.keys()
-            values = [self.UCB1(self.v[k], self.n[k], self.n[self.current]) for k in list(keys)]
-            nextNode = keys[max(enumerate(values), key=itemgetter(1))]
-            x,y = result[nextNode]
+            keys = list(self.result.keys())
+            if len(keys) == 0:
+                return False
+            values = [self.UCB1(self.v[k], self.n[k], self.n[self.current]) for k in keys]  
+            nextNode = keys[max(enumerate(values), key=itemgetter(1))[0]]
+            x,y = self.result[nextNode]
             score4.loadState()
             if not score4.place(x,y,"black"):
                 return False
@@ -99,7 +101,6 @@ depth = 0
 while(1):
     if not monteCarlo.selection(depth):
         print("end of game")
-        cv2.waitKey(10000)
         break
     depth += 1
 
