@@ -1,4 +1,5 @@
 import numpy as np
+from gmpy2 import mpz
 
 currentBoardBlack = np.zeros((4,4,4), dtype="uint8")
 currentBoardWhite = np.zeros((4,4,4), dtype="uint8")
@@ -9,11 +10,13 @@ def computeCurrent():
     currentBoard = currentBoardBlack + 2*currentBoardWhite
 
 def possibleActions():
-    placeArg = np.argwhere(np.count_nonzero(currentBoard, axis=2) != 4)
-    #nditer
+    return np.argwhere(np.count_nonzero(currentBoard, axis=2) != 4)
 
 def valueBMW():
     return currentBoardBlack.sum() - currentBoardWhite.sum()
+
+def binarize():
+    return int(''.join([mpz(num).digits() for num in currentBoard.flatten()]), 3)
 
 def place(x,y,color):
     global currentBoardBlack, currentBoardWhite
@@ -26,23 +29,23 @@ def place(x,y,color):
         return False
     else:
         currentBoardColor[x,y,nonzero] = 1
+        computeCurrent()
         return True
 
 def judge():
     black = np.any(currentBoardBlack.sum(0)==4) or np.any(currentBoardBlack.sum(1)==4) or np.any(currentBoardBlack.sum(2)==4)
     white = np.any(currentBoardWhite.sum(0)==4) or np.any(currentBoardWhite.sum(1)==4) or np.any(currentBoardWhite.sum(2)==4)
     if black:
-        return "black"
+        return True, "black"
     elif white:
-        return "white"
+        return True, "white"
     else:
-        return "not finished"
+        return False, "not finished"
 
 
 def compute(x,y,color):
     computeCurrent()
-    possibleActions()
     if place(x,y,color):
-        return True, judge(), currentBoardBlack, currentBoardWhite
+        return True, judge()[0], currentBoardBlack, currentBoardWhite
     else:
         return False, "full", currentBoardBlack, currentBoardWhite

@@ -1,5 +1,6 @@
 import timeit
 import numpy as np
+import time
 s1 = """
 a = []
 b = []
@@ -23,5 +24,12 @@ else:
     d = c
 """
 
-print(timeit.timeit(stmt=s1, number=10000))
-print(timeit.timeit(stmt=s2, number=10000))
+#print(timeit.timeit(stmt=s1, number=10000))
+#print(timeit.timeit(stmt=s2, number=10000))
+
+def wait():
+    time.sleep(5)
+    return [0 for i in range(10000)]
+
+for i in wait():
+    print(i, end="")
