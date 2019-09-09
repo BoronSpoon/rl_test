@@ -1,6 +1,13 @@
 import numpy as np
 import cv2
 
+class Plotter:
+    def __init__(self, currentBoardBlack, currentBoardWhite, currentBoard, savedBoard):
+        self.currentBoardBlack = np.zeros((4,4,4), dtype="uint8")
+        self.currentBoardWhite = np.zeros((4,4,4), dtype="uint8")
+        self.currentBoard = np.zeros((4,4,4), dtype="uint8")
+        self.savedBoard = [None, None]
+
 canvas_size = 128
 coor = [int(canvas_size*(1/8+1/4*i)) for i in range(4)]
 h_margin = int(canvas_size*5/8)

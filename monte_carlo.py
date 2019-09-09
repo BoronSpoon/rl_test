@@ -1,6 +1,7 @@
 from score4 import Score4
-from opencv_test import *
+from cv2Plotter import Plotter
 score4 = Score4()
+plotter = Plotter()
 
 v = {}
 n = {}

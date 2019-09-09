@@ -2,60 +2,58 @@ import numpy as np
 from gmpy2 import mpz
 from copy import deepcopy
 
-currentBoardBlack = np.zeros((4,4,4), dtype="uint8")
-currentBoardWhite = np.zeros((4,4,4), dtype="uint8")
-currentBoard = np.zeros((4,4,4), dtype="uint8")
-savedBoard = [None, None]
+class Score4:
+    def __init__(self, currentBoardBlack, currentBoardWhite, currentBoard, savedBoard):
+        self.currentBoardBlack = np.zeros((4,4,4), dtype="uint8")
+        self.currentBoardWhite = np.zeros((4,4,4), dtype="uint8")
+        self.currentBoard = np.zeros((4,4,4), dtype="uint8")
+        self.savedBoard = [None, None]
 
-def computeCurrent():
-    global currentBoard
-    currentBoard = currentBoardBlack + 2*currentBoardWhite
+    def computeCurrent(self):
+        self.currentBoard = self.currentBoardBlack + 2*self.currentBoardWhite
 
-def saveState():
-    global savedBoard
-    savedBoard = [deepcopy(currentBoardBlack), deepcopy(currentBoardWhite)]
+    def saveState(self):
+        self.savedBoard = [deepcopy(self.currentBoardBlack), deepcopy(self.currentBoardWhite)]
 
-def loadState():
-    global currentBoardBlack, currentBoardWhite
-    currentBoardBlack, currentBoardWhite = deepcopy(savedBoard)
+    def loadState(self):
+        self.currentBoardBlack, self.currentBoardWhite = self.savedBoard
 
-def possibleActions():
-    return np.argwhere(np.count_nonzero(currentBoard, axis=2) != 4)
+    def possibleActions(self):
+        return np.argwhere(np.count_nonzero(self.currentBoard, axis=2) != 4)
 
-def valueBMW():
-    return currentBoardBlack.sum() - currentBoardWhite.sum()
+    def valueBMW(self):
+        return self.currentBoardBlack.sum() - self.currentBoardWhite.sum()
 
-def binarize():
-    return int(''.join([mpz(num).digits() for num in currentBoard.flatten()]), 3)
+    def binarize(self):
+        return int(''.join([mpz(num).digits() for num in self.currentBoard.flatten()]), 3)
 
-def place(x,y,color):
-    global currentBoardBlack, currentBoardWhite
-    if color == "black":
-        currentBoardColor = currentBoardBlack
-    else:
-        currentBoardColor = currentBoardWhite
-    nonzero = np.count_nonzero(currentBoard[x,y,:])
-    if nonzero == 4:
-        return False
-    else:
-        currentBoardColor[x,y,nonzero] = 1
-        computeCurrent()
-        return True
+    def place(self,x,y,color):
+        if color == "black":
+            currentBoardColor = self.currentBoardBlack
+        else:
+            currentBoardColor = self.currentBoardWhite
+        nonzero = np.count_nonzero(currentBoard[x,y,:])
+        if nonzero == 4:
+            return False
+        else:
+            currentBoardColor[x,y,nonzero] = 1
+            self.computeCurrent()
+            return True
 
-def judge():
-    black = np.any(currentBoardBlack.sum(0)==4) or np.any(currentBoardBlack.sum(1)==4) or np.any(currentBoardBlack.sum(2)==4)
-    white = np.any(currentBoardWhite.sum(0)==4) or np.any(currentBoardWhite.sum(1)==4) or np.any(currentBoardWhite.sum(2)==4)
-    if black:
-        return True, "black"
-    elif white:
-        return True, "white"
-    else:
-        return False, "not finished"
+    def judge(self):
+        black = np.any(self.currentBoardBlack.sum(0)==4) or np.any(self.currentBoardBlack.sum(1)==4) or np.any(self.currentBoardBlack.sum(2)==4)
+        white = np.any(self.currentBoardWhite.sum(0)==4) or np.any(self.currentBoardWhite.sum(1)==4) or np.any(self.currentBoardWhite.sum(2)==4)
+        if black:
+            return True, "black"
+        elif white:
+            return True, "white"
+        else:
+            return False, "not finished"
 
 
-def compute(x,y,color):
-    computeCurrent()
-    if place(x,y,color):
-        return True, judge()[0], currentBoardBlack, currentBoardWhite
-    else:
-        return False, "full", currentBoardBlack, currentBoardWhite
+    def compute(self,x,y,color):
+        self.computeCurrent()
+        if place(x,y,color):
+            return True, self.judge()[0], self.currentBoardBlack, self.currentBoardWhite
+        else:
+            return False, "full", self.currentBoardBlack, self.currentBoardWhite
