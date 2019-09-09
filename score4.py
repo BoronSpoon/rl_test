@@ -43,6 +43,14 @@ class Score4:
             self.computeCurrent()
             return True
 
+    def randomChoice(self, color):
+        actions = self.possibleActions()
+        if actions.shape[0] == 0:
+            return False
+        x,y = actions[np.random.choice(actions.shape[0])]
+        return self.place(x,y,color)
+        
+
     def judge(self):
         black = np.any(self.currentBoardBlack.sum(0)==4) or np.any(self.currentBoardBlack.sum(1)==4) or np.any(self.currentBoardBlack.sum(2)==4)
         white = np.any(self.currentBoardWhite.sum(0)==4) or np.any(self.currentBoardWhite.sum(1)==4) or np.any(self.currentBoardWhite.sum(2)==4)
