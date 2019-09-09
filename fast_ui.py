@@ -2,19 +2,11 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
 from score4 import compute
 import numpy as np
-import * from opencv_test
-
-plt.ion()
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-x = {}
-y = {}
-z = {}
-ax.set_xlim(0,4)
-ax.set_ylim(0,4)
-ax.set_zlim(0,4)
+from opencv_test import *
+import cv2
 
 while(1):
+    print("func")
     args = input().split()
     args[0] = int(args[0])
     args[1] = int(args[1])
@@ -29,8 +21,5 @@ while(1):
             break
         else:
             currentBoardBlack, currentBoardWhite = ret[2], ret[3]
-    z["black"],x["black"],y["black"] = np.nonzero(currentBoardBlack)
-    z["white"],x["white"],y["white"] = np.nonzero(currentBoardWhite)
-    ax.scatter(z["black"],x["black"],y["black"], c='b', s=300, marker='o') 
-    ax.scatter(z["white"],x["white"],y["white"], c='r', s=300, marker='o')
-    fig.canvas.draw()
+    plot(currentBoardBlack, currentBoardWhite)
+    
