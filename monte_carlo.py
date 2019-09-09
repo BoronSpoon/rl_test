@@ -18,7 +18,7 @@ class MonteCarlo:
         self.colors = ["black", "white"]
         self.result = {}
 
-    def BackPropagate(self,state,r):
+    def backPropagate(self,state,r):
         if state in self.v:
             self.v[state] += r
             self.n[state] += 1
@@ -34,7 +34,7 @@ class MonteCarlo:
             actions = score4.possibleActions()
             if actions.shape[0] == 0 or score4.judge()[0]:
                 self.r = score4.valueBMW()
-                self.BackPropagate(self.current, self.r)
+                self.backPropagate(self.current, self.r)
                 break
             score4.saveState()
             for x,y in actions:
@@ -42,12 +42,12 @@ class MonteCarlo:
                 score4.loadState()
                 score4.place(x,y,self.colors[0%2])
                 self.result[score4.binarize()] = [x,y]
-                self.simulation()
-                    for state in self.stack[depth:self.count+1][::-1]:
-                        BackPropagate(state, self.r)
-        break
+                self.simulation(x,y)
+                for state in self.stack[depth:self.count+1][::-1]:
+                    self.backPropagate(state, self.r)
+            break
 
-    def simulation(self):
+    def simulation(self, x,y):
         for i in range(100):
             self.count = 0
             score4.loadState()
@@ -93,7 +93,7 @@ monteCarlo = MonteCarlo()
 
 depth = 0
 while(1):
-    if not selection(depth):
+    if not monteCarlo.selection(depth):
         print("end of game")
         cv2.waitKey(10000)
         break
