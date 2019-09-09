@@ -3,7 +3,7 @@ from gmpy2 import mpz
 from copy import deepcopy
 
 class Score4:
-    def __init__(self, currentBoardBlack, currentBoardWhite, currentBoard, savedBoard):
+    def __init__(self):
         self.currentBoardBlack = np.zeros((4,4,4), dtype="uint8")
         self.currentBoardWhite = np.zeros((4,4,4), dtype="uint8")
         self.currentBoard = np.zeros((4,4,4), dtype="uint8")
@@ -32,7 +32,7 @@ class Score4:
             currentBoardColor = self.currentBoardBlack
         else:
             currentBoardColor = self.currentBoardWhite
-        nonzero = np.count_nonzero(currentBoard[x,y,:])
+        nonzero = np.count_nonzero(self.currentBoard[x,y,:])
         if nonzero == 4:
             return False
         else:
