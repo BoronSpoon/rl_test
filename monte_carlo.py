@@ -30,6 +30,7 @@ while(1):
         break
     score4.saveState()
     for x,y in actions:
+        print("action")
         for i in range(100):
             count = 0
             score4.loadState()
@@ -37,7 +38,6 @@ while(1):
             count += 1
             stack[0] = current
             stack[1] = score4.binarize()
-            internalCount = 0
             while(1):
                 actions = score4.possibleActions()
                 if actions.shape[0] == 0 or score4.judge()[0]:
@@ -48,7 +48,7 @@ while(1):
                     stack[count] = score4.binarize()
                     x,y = actions[np.random.choice(actions.shape[0])]
                     score4.place(x,y,colors[count%2])
-                    plotter.plot(score4.currentBoardBlack, score4.currentBoardWhite)
+                    #plotter.plot(score4.currentBoardBlack, score4.currentBoardWhite)
             for state in stack[:count+1][::-1]:
                 updateVN(state, r)
     break
