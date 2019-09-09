@@ -16,7 +16,8 @@ class Score4:
         self.savedBoard = [deepcopy(self.currentBoardBlack), deepcopy(self.currentBoardWhite)]
 
     def loadState(self):
-        self.currentBoardBlack, self.currentBoardWhite = self.savedBoard
+        self.currentBoardBlack, self.currentBoardWhite = deepcopy(self.savedBoard)
+        self.computeCurrent()
 
     def possibleActions(self):
         return np.argwhere(np.count_nonzero(self.currentBoard, axis=2) != 4)
@@ -30,8 +31,10 @@ class Score4:
     def place(self,x,y,color):
         if color == "black":
             currentBoardColor = self.currentBoardBlack
-        else:
+        elif color == "white":
             currentBoardColor = self.currentBoardWhite
+        else:
+            print(error)
         nonzero = np.count_nonzero(self.currentBoard[x,y,:])
         if nonzero == 4:
             return False

@@ -21,7 +21,6 @@ def updateVN(state,r):
         n[state] = 1
 
 while(1):
-    count = 0
     stack = [0 for i in range(65)]
     current = score4.binarize()
     actions = score4.possibleActions()
@@ -31,6 +30,7 @@ while(1):
         break
     score4.saveState()
     for x,y in actions:
+        count = 0
         score4.loadState()
         score4.place(x,y,colors[count%2])
         count += 1

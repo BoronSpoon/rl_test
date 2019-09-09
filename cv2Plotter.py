@@ -38,5 +38,5 @@ class Plotter:
         self.plot_circle(currentBoardWhite, (0,0,255))
         self.warp()
         cv2.imshow("test", self.new_canvas)
-        if cv2.waitKey(100) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord('q'):
             exit()
