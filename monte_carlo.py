@@ -46,7 +46,6 @@ class MonteCarlo:
             score4.place(x,y,self.colors[0%2])
             self.result[score4.binarize()] = [x,y]
             self.simulation(x,y)
-            self.backPropagate()
         return True
 
     def simulation(self, x,y):
@@ -69,6 +68,7 @@ class MonteCarlo:
                     x,y = actions[np.random.choice(actions.shape[0])]
                     score4.place(x,y,self.colors[self.count%2])
                     #plotter.plot(score4.currentBoardBlack, score4.currentBoardWhite)
+            self.backPropagate()
 
     def UCB1(self,v,n,N):
         return v+self.C*sqrt(log(N)/n)
