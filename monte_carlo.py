@@ -20,9 +20,9 @@ class MonteCarlo:
 
     def backPropagate(self):
         for state in self.stack[:self.count+1][::-1]:
-            self.updateVW(state)
+            self.updateVN(state)
 
-    def updateVW(self, state):
+    def updateVN(self, state):
         if state in self.v:
             self.v[state] += self.r
             self.n[state] += 1
@@ -37,7 +37,7 @@ class MonteCarlo:
         actions = score4.possibleActions()
         if actions.shape[0] == 0 or score4.judge()[0]:
             self.r = score4.valueBMW()
-            self.updateVW(self.current)
+            self.updateVN(self.current)
             return False
         score4.saveState()
         for x,y in actions:
@@ -52,6 +52,7 @@ class MonteCarlo:
     def simulation(self, x,y):
         for i in range(10):
             self.count = 0
+            self.stack = [0 for i in range(65)]
             score4.loadState()
             score4.place(x,y,self.colors[self.count%2])
             self.count += 1
@@ -79,6 +80,7 @@ class MonteCarlo:
             values = [self.UCB1(self.v[k], self.n[k], self.n[self.current]) for k in list(keys)]
             nextNode = keys[max(enumerate(values), key=itemgetter(1))]
             x,y = result[nextNode]
+            score4.loadState()
             if not score4.place(x,y,"black"):
                 return False
             else:
