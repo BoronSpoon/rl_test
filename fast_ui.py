@@ -6,7 +6,6 @@ from opencv_test import *
 import cv2
 
 while(1):
-    print("func")
     args = input().split()
     args[0] = int(args[0])
     args[1] = int(args[1])
@@ -22,4 +21,5 @@ while(1):
         else:
             currentBoardBlack, currentBoardWhite = ret[2], ret[3]
     plot(currentBoardBlack, currentBoardWhite)
+    
     
