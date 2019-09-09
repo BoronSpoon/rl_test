@@ -18,12 +18,16 @@ class MonteCarlo:
         self.colors = ["black", "white"]
         self.result = {}
 
-    def backPropagate(self,state,r):
+    def backPropagate(self):
+        for state in self.stack[:self.count+1][::-1]:
+            self.updateVW(state)
+
+    def updateVW(self, state):
         if state in self.v:
-            self.v[state] += r
+            self.v[state] += self.r
             self.n[state] += 1
         else:
-            self.v[state] = r
+            self.v[state] = self.r
             self.n[state] = 1
 
     def expansion(self):
@@ -33,7 +37,7 @@ class MonteCarlo:
         actions = score4.possibleActions()
         if actions.shape[0] == 0 or score4.judge()[0]:
             self.r = score4.valueBMW()
-            self.backPropagate(self.current, self.r)
+            self.updateVW(self.current)
             return False
         score4.saveState()
         for x,y in actions:
@@ -42,8 +46,7 @@ class MonteCarlo:
             score4.place(x,y,self.colors[0%2])
             self.result[score4.binarize()] = [x,y]
             self.simulation(x,y)
-            for state in self.stack[:self.count+1][::-1]:
-                self.backPropagate(state, self.r)
+            self.backPropagate()
         return True
 
     def simulation(self, x,y):
@@ -73,7 +76,7 @@ class MonteCarlo:
         if depth%2 == 0:
             self.expansion()
             keys = self.result.keys()
-            values = [self.UCB1(self.v[k], self.n[k], self.n[self.current]) for k in keys]
+            values = [self.UCB1(self.v[k], self.n[k], self.n[self.current]) for k in list(keys)]
             nextNode = keys[max(enumerate(values), key=itemgetter(1))]
             x,y = result[nextNode]
             if not score4.place(x,y,"black"):
