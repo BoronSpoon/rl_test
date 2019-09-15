@@ -17,5 +17,5 @@ pipenv sync
 # executing the code
 ```
 pipenv shell
-python 
+python monte_carlo.py
 ```
